@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import CustomCursor from "./components/CustomCursor";
+import Hero3D from "./components/Hero3D";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +12,11 @@ export default function Home() {
       <CustomCursor />
       <div className="p-1 bg-[#121212] h-screen w-screen overflow-hidden cursor-none">
         <div className="bg-[#121212] p-3 h-full w-full rounded-xl flex flex-col justify-between text-white relative">
-          <div className="flex justify-between items-center z-40">
+          {/* Background 3D Torus Element */}
+          <Hero3D />
+
+          {/* Header Navigation */}
+          <div className="flex justify-between items-center z-40 relative">
             <div className="ml-4 mt-4">
               <span className="font-general text-xs ml-2 cursor-pointer" data-cursor="sticky">PORTFOLIO</span>
             </div>
@@ -40,18 +45,20 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="my-auto flex flex-col gap-4 ml-24">
+          {/* Main Title & Description (Floating cleanly over 3D Canvas) */}
+          <div className="my-auto flex flex-col gap-4 ml-24 z-10 relative">
             <div className="font-helvetica font-semibold uppercase tracking-tight text-[13vw] leading-[0.85] text-white">
               <div>VAIBHAV</div>
               <div>SINGH</div>
             </div>
 
             <p className="font-general text-xs text-neutral-300 max-w-lg uppercase leading-normal">
-              I'M A CREATIVE DEVELOPER, PASSIONATE ABOUT CRAFTING INSPIRING DIGITAL EXPERIENCES. WITH A UNIQUE FUSION OF TECHNOLOGY AND DESIGN, I CREATE ELEGANT AND ENGAGING PROJECTS THAT CAPTIVATE AUDIENCES AND LEAVE A LASTING IMPRESSION. I WILL BRING YOUR DIGITAL DREAMS TO LIFE.
+              I’M A CREATIVE DEVELOPER PASSIONATE ABOUT TURNING IDEAS INTO MODERN, INTERACTIVE DIGITAL EXPERIENCES. I BLEND WEB DEVELOPMENT, UI DESIGN, AND PERFORMANCE TO CREATE ELEGANT, RESPONSIVE, AND ENGAGING PROJECTS. I BRING IDEAS TO LIFE THROUGH CLEAN CODE, CREATIVE DESIGN, AND A CONSTANT DRIVE TO BUILD SOMETHING BETTER.
             </p>
           </div>
 
-          <div className="absolute bottom-8 right-10 flex items-center justify-center w-28 h-28 cursor-pointer group select-none">
+          {/* Bottom Right Scroll Down Widget */}
+          <div className="absolute bottom-8 right-10 flex items-center justify-center w-28 h-28 cursor-pointer group select-none z-40">
             <svg className="w-full h-full animate-[spin_12s_linear_infinite]" viewBox="0 0 100 100">
               <path
                 id="scrollCirclePath"
