@@ -1,13 +1,75 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import CustomCursor from "./components/CustomCursor";
 
 export default function Home() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <>
-      <div className="bg-#080808 p-3">
-        <div>
-          <div className="w-1/2">
-            <span className="font-neue-haas  text-xs ">PORTFOLIO</span>
+      <CustomCursor />
+      <div className="p-1 bg-[#121212] h-screen w-screen overflow-hidden cursor-none">
+        <div className="bg-[#121212] p-3 h-full w-full rounded-xl flex flex-col justify-between text-white relative">
+          <div className="flex justify-between items-center z-40">
+            <div className="ml-4 mt-4">
+              <span className="font-general text-xs ml-2 cursor-pointer" data-cursor="sticky">PORTFOLIO</span>
+            </div>
 
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle Menu"
+              data-cursor="sticky"
+              className="w-auto inline-flex flex-col items-end justify-center gap-y-1.5 mr-4 mt-4 cursor-pointer z-50 p-2.5 group focus:outline-none"
+            >
+              <div
+                className={`h-0.5 w-7 bg-white transition-all duration-300 ease-in-out transform origin-center ${
+                  isOpen ? "translate-y-[8px] rotate-45" : ""
+                }`}
+              />
+              <div
+                className={`h-0.5 w-7 bg-white transition-all duration-300 ease-in-out transform ${
+                  isOpen ? "opacity-0 scale-x-0" : "opacity-100"
+                }`}
+              />
+              <div
+                className={`h-0.5 w-7 bg-white transition-all duration-300 ease-in-out transform origin-center ${
+                  isOpen ? "-translate-y-[8px] -rotate-45" : ""
+                }`}
+              />
+            </button>
+          </div>
+
+          <div className="my-auto flex flex-col gap-4 ml-24">
+            <div className="font-helvetica font-semibold uppercase tracking-tight text-[13vw] leading-[0.85] text-white">
+              <div>VAIBHAV</div>
+              <div>SINGH</div>
+            </div>
+
+            <p className="font-general text-xs text-neutral-300 max-w-lg uppercase leading-normal">
+              I'M A CREATIVE DEVELOPER, PASSIONATE ABOUT CRAFTING INSPIRING DIGITAL EXPERIENCES. WITH A UNIQUE FUSION OF TECHNOLOGY AND DESIGN, I CREATE ELEGANT AND ENGAGING PROJECTS THAT CAPTIVATE AUDIENCES AND LEAVE A LASTING IMPRESSION. I WILL BRING YOUR DIGITAL DREAMS TO LIFE.
+            </p>
+          </div>
+
+          <div className="absolute bottom-8 right-10 flex items-center justify-center w-28 h-28 cursor-pointer group select-none">
+            <svg className="w-full h-full animate-[spin_12s_linear_infinite]" viewBox="0 0 100 100">
+              <path
+                id="scrollCirclePath"
+                d="M 50, 50 m -36, 0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0"
+                fill="none"
+              />
+              <text className="font-general text-[7.5px] uppercase tracking-[0.16em] fill-neutral-400 group-hover:fill-white font-medium transition-colors duration-300">
+                <textPath href="#scrollCirclePath" startOffset="0%">
+                  SCROLL DOWN • SCROLL DOWN • SCROLL DOWN •
+                </textPath>
+              </text>
+            </svg>
+
+            <div className="absolute inset-0 m-auto w-12 h-12 rounded-full border border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-sm group-hover:border-white/50 group-hover:bg-white/10 transition-colors duration-300">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="1.6" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m0 0l-6-6m6 6l6-6" />
+              </svg>
+            </div>
           </div>
         </div>
       </div>
