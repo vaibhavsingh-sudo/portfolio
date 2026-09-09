@@ -1,8 +1,30 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Helvetica Neue";
+  src: local("Helvetica Neue Bold"), local("HelveticaNeue-Bold"), local("Helvetica Neue 75 Bold"), local("Helvetica Neue"),
+    url("/fonts/HelveticaNeue-Bold.woff2") format("woff2"),
+    url("/fonts/HelveticaNeue-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Neue Haas Grotesk Display";
+  src: local("Neue Haas Grotesk Display Bold"), local("NeueHaasGroteskDisplay-Bold"), local("Neue Haas Grotesk Display"),
+    url("/fonts/NeueHaasGroteskDisplay-Bold.woff2") format("woff2"),
+    url("/fonts/NeueHaasGroteskDisplay-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-helvetica: "Helvetica Neue", "Helvetica Neue 75 Bold", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-neue-haas: "Neue Haas Grotesk Display", "Neue Haas Grotesk", "Helvetica Neue", sans-serif;
 }
 
 @theme inline {
@@ -10,6 +32,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-helvetica: var(--font-helvetica);
+  --font-neue-haas: var(--font-neue-haas);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +46,13 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-helvetica);
+}
+
+.font-helvetica {
+  font-family: var(--font-helvetica);
+}
+
+.font-neue-haas {
+  font-family: var(--font-neue-haas);
 }
