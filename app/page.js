@@ -34,15 +34,13 @@ export default function Home() {
 
       <div
         onClick={() => setIsOpen(false)}
-        className={`fixed inset-0 z-40 bg-black/70 backdrop-blur-md transition-opacity duration-500 ease-in-out ${
-          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
+        className={`fixed inset-0 z-40 bg-black/70 backdrop-blur-md transition-opacity duration-500 ease-in-out ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
       />
 
       <div
-        className={`bg-white text-[#121212] w-full sm:w-[580px] md:w-[52vw] lg:w-[48vw] min-w-[320px] h-screen fixed top-0 right-0 z-50 px-6 sm:px-8 md:px-10 py-8 sm:py-10 shadow-2xl flex flex-col justify-between overflow-hidden transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] transform ${
-          isOpen ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"
-        }`}
+        className={`bg-[#E4E5E0] text-[#121212] w-full sm:w-[580px] md:w-[52vw] lg:w-[48vw] min-w-[320px] h-screen fixed top-0 right-0 z-50 px-6 sm:px-8 md:px-10 py-8 sm:py-10 shadow-2xl flex flex-col justify-between overflow-hidden transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] transform ${isOpen ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"
+          }`}
       >
         <div className="flex justify-end items-center">
           <button
@@ -70,9 +68,8 @@ export default function Home() {
                 href={link.href}
                 onClick={() => setIsOpen(false)}
                 data-cursor="sticky"
-                className={`block text-5xl sm:text-6xl md:text-7xl font-bold uppercase tracking-tight text-[#121212]/85 hover:text-black transition-all duration-500 ease-out transform group ${
-                  isOpen ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
-                }`}
+                className={`block text-5xl sm:text-6xl md:text-7xl font-bold uppercase tracking-tight text-[#121212]/85 hover:text-black transition-all duration-500 ease-out transform group ${isOpen ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
+                  }`}
                 style={{ transitionDelay: `${isOpen ? idx * 70 + 120 : 0}ms` }}
               >
                 <span className="inline-block group-hover:translate-x-3 transition-transform duration-300">
@@ -84,9 +81,8 @@ export default function Home() {
         </nav>
 
         <div
-          className={`grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 pt-8 border-t border-neutral-200 transition-all duration-700 ease-out delay-500 ${
-            isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
+          className={`grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 pt-8 border-t border-neutral-200 transition-all duration-700 ease-out delay-500 ${isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            }`}
         >
           <div className="flex flex-col gap-1">
             <span className="text-[11px] font-mono uppercase tracking-widest text-neutral-500 font-semibold">
@@ -127,35 +123,30 @@ export default function Home() {
           <Hero3D />
 
           <div
-            className={`absolute inset-0 pointer-events-none z-10 bg-[#121212]/25 backdrop-blur-[3px] rounded-xl border border-white/[0.03] transition-all duration-1000 ease-out ${
-              isLoaded ? "opacity-100 scale-100" : "opacity-0 scale-[0.98]"
-            }`}
+            className={`absolute inset-0 pointer-events-none z-10 bg-[#121212]/25 backdrop-blur-[3px] rounded-xl border border-white/[0.03] transition-all duration-1000 ease-out ${isLoaded ? "opacity-100 scale-100" : "opacity-0 scale-[0.98]"
+              }`}
           />
 
           <div className="flex justify-between items-center z-30 relative">
             <div
-              className={`ml-4 mt-4 transition-all duration-700 ease-out ${
-                isLoaded ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
-              }`}
+              className={`ml-4 mt-4 transition-all duration-700 ease-out ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
+                }`}
             />
 
             <button
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle Menu"
               data-cursor="sticky"
-              className={`inline-flex flex-col bg-white rounded-full h-12 w-12 items-center justify-center gap-y-1.5 mr-4 mt-4 cursor-pointer z-30 p-2.5 group focus:outline-none transition-all duration-700 ease-out delay-150 ${
-                isLoaded ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
-              }`}
+              className={`inline-flex flex-col bg-white rounded-full h-12 w-12 items-center justify-center gap-y-1.5 mr-4 mt-4 cursor-pointer z-30 p-2.5 group focus:outline-none transition-all duration-700 ease-out delay-150 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
+                }`}
             >
               <div
-                className={`h-0.5 w-6 bg-black transition-all duration-300 ease-in-out transform origin-center ${
-                  isOpen ? "translate-y-[4px] rotate-45" : ""
-                }`}
+                className={`h-0.5 w-6 bg-black transition-all duration-300 ease-in-out transform origin-center ${isOpen ? "translate-y-[4px] rotate-45" : ""
+                  }`}
               />
               <div
-                className={`h-0.5 w-6 bg-black transition-all duration-300 ease-in-out transform origin-center ${
-                  isOpen ? "-translate-y-[4px] -rotate-45" : ""
-                }`}
+                className={`h-0.5 w-6 bg-black transition-all duration-300 ease-in-out transform origin-center ${isOpen ? "-translate-y-[4px] -rotate-45" : ""
+                  }`}
               />
             </button>
           </div>
@@ -164,18 +155,16 @@ export default function Home() {
             <div className="font-helvetica font-semibold uppercase tracking-tight text-[13vw] leading-[0.85] text-white">
               <div className="overflow-hidden">
                 <div
-                  className={`transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] delay-300 ${
-                    isLoaded ? "translate-y-0" : "translate-y-full"
-                  }`}
+                  className={`transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] delay-300 ${isLoaded ? "translate-y-0" : "translate-y-full"
+                    }`}
                 >
                   VAIBHAV
                 </div>
               </div>
               <div className="overflow-hidden">
                 <div
-                  className={`transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] delay-500 ${
-                    isLoaded ? "translate-y-0" : "translate-y-full"
-                  }`}
+                  className={`transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] delay-500 ${isLoaded ? "translate-y-0" : "translate-y-full"
+                    }`}
                 >
                   SINGH
                 </div>
@@ -183,18 +172,16 @@ export default function Home() {
             </div>
 
             <p
-              className={`font-general text-xs text-neutral-300 max-w-lg uppercase leading-normal transition-all duration-1000 ease-out delay-700 ${
-                isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-              }`}
+              className={`font-general text-xs text-neutral-300 max-w-lg uppercase leading-normal transition-all duration-1000 ease-out delay-700 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                }`}
             >
               I’M A CREATIVE DEVELOPER PASSIONATE ABOUT TURNING IDEAS INTO MODERN, INTERACTIVE DIGITAL EXPERIENCES. I BLEND WEB DEVELOPMENT, UI DESIGN, AND PERFORMANCE TO CREATE ELEGANT, RESPONSIVE, AND ENGAGING PROJECTS. I BRING IDEAS TO LIFE THROUGH CLEAN CODE, CREATIVE DESIGN, AND A CONSTANT DRIVE TO BUILD SOMETHING BETTER.
             </p>
           </div>
 
           <div
-            className={`absolute bottom-8 right-10 flex items-center justify-center w-28 h-28 cursor-pointer group select-none z-30 transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] delay-900 ${
-              isLoaded ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-75 translate-y-6"
-            }`}
+            className={`absolute bottom-8 right-10 flex items-center justify-center w-28 h-28 cursor-pointer group select-none z-30 transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] delay-900 ${isLoaded ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-75 translate-y-6"
+              }`}
           >
             <svg className="w-full h-full animate-[spin_12s_linear_infinite]" viewBox="0 0 100 100">
               <path
