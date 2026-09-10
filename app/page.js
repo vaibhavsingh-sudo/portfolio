@@ -20,6 +20,19 @@ export default function Home() {
   const socialRef = useRef(null);
   const wordmarkRef = useRef(null);
 
+  const skillsSectionRef = useRef(null);
+  const skillsTagRef = useRef(null);
+  const skillsTitleRef = useRef(null);
+  const skillsDescRef = useRef(null);
+  const skillsCardsRef = useRef([]);
+  skillsCardsRef.current = [];
+
+  const addToSkillsCardsRef = (el) => {
+    if (el && !skillsCardsRef.current.includes(el)) {
+      skillsCardsRef.current.push(el);
+    }
+  };
+
   const sideNavRef = useRef(null);
   const backdropRef = useRef(null);
   const menuTimeline = useRef(null);
@@ -153,10 +166,122 @@ export default function Home() {
           { yPercent: 0, opacity: 1, duration: 1.1, ease: "power3.out" },
           "-=0.5"
         );
-    }, contactRef);
+
+      const skillsHeaderTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: skillsSectionRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+      });
+
+      skillsHeaderTl
+        .fromTo(
+          skillsTagRef.current,
+          { y: 25, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }
+        )
+        .fromTo(
+          skillsTitleRef.current,
+          { yPercent: 100, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 1, ease: "power4.out" },
+          "-=0.6"
+        )
+        .fromTo(
+          skillsDescRef.current,
+          { y: 25, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+          "-=0.6"
+        );
+
+      skillsCardsRef.current.forEach((card) => {
+        if (!card) return;
+
+        const cardTitle = card.querySelector(".card-title");
+        const cardNumber = card.querySelector(".card-number");
+        const cardDesc = card.querySelector(".card-desc");
+        const subSkills = card.querySelectorAll(".sub-skill-item");
+
+        const cardTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        });
+
+        cardTl
+          .fromTo(
+            [cardTitle, cardNumber],
+            { y: 20, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.1 }
+          )
+          .fromTo(
+            cardDesc,
+            { y: 25, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+            "-=0.4"
+          )
+          .fromTo(
+            subSkills,
+            { y: 20, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.6, stagger: 0.08, ease: "power3.out" },
+            "-=0.5"
+          );
+      });
+    });
 
     return () => ctx.revert();
   }, []);
+
+  const [activeSkillCategory, setActiveSkillCategory] = useState(0);
+
+  const skillCategories = [
+    {
+      id: "01",
+      title: "FullStack Development",
+      description:
+        "Your business deserves a fast, secure, and future-proof digital foundation. I develop custom web apps with clean architecture, optimized databases, and seamless integrations—ensuring reliability at every layer.",
+      subSkills: [
+        { num: "01", name: "Backend Engineering" },
+        { num: "02", name: "Frontend Excellence" },
+        { num: "03", name: "Database Design" },
+      ],
+    },
+    {
+      id: "02",
+      title: "DevOps & Cloud Solutions",
+      description:
+        "Deploying software shouldn't be a gamble. I automate infrastructure, enforce security, and leverage cloud platforms (AWS/Vercel) to keep your app running smoothly—24/7, at any scale.",
+      subSkills: [
+        { num: "01", name: "CI/CD Pipelines" },
+        { num: "02", name: "Server Management" },
+        { num: "03", name: "Performance Tuning" },
+      ],
+    },
+    {
+      id: "03",
+      title: "Security & Optimization",
+      description:
+        "Slow or hacked apps destroy trust. I harden security (XSS/SQLi protection, OAuth) and optimize bottlenecks so your app stays fast, safe, and scalable as you grow.",
+      subSkills: [
+        { num: "01", name: "Code Audits" },
+        { num: "02", name: "Pen Testing" },
+        { num: "03", name: "SEO Tech Stack" },
+      ],
+    },
+    {
+      id: "04",
+      title: "Web & Mobile Apps",
+      description:
+        "A clunky interface can sink even the best ideas. I craft responsive, pixel perfect web and mobile apps (React Native/Flutter) that users love—bridging design and functionality seamlessly.",
+      subSkills: [
+        { num: "01", name: "Cross-Platform Apps" },
+        { num: "02", name: "PWAs" },
+        { num: "03", name: "E-Commerce" },
+      ],
+    },
+  ];
 
   const navLinks = [
     { label: "HOME", href: "#" },
@@ -177,14 +302,12 @@ export default function Home() {
     <>
       <CustomCursor />
 
-      {/* Backdrop Overlay */}
       <div
         ref={backdropRef}
         onClick={() => setIsOpen(false)}
         className="fixed inset-0 z-40 bg-black/70 backdrop-blur-md opacity-0 pointer-events-none"
       />
 
-      {/* Side Navigation Drawer */}
       <div
         ref={sideNavRef}
         className="bg-[#E4E5E0] text-[#121212] w-full sm:w-[580px] md:w-[52vw] lg:w-[48vw] min-w-[320px] h-screen fixed top-0 right-0 z-50 px-6 sm:px-8 md:px-10 py-8 sm:py-10 shadow-2xl flex flex-col justify-between overflow-hidden opacity-0 pointer-events-none"
@@ -264,97 +387,83 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="p-1 bg-[#121212] h-screen w-full overflow-hidden">
-        <div className="bg-[#121212] p-3 h-full w-full rounded-xl flex flex-col justify-between text-white relative">
-          <Hero3D />
+      <section className="relative min-h-screen w-full bg-[#121212] overflow-hidden flex flex-col justify-between border-b border-[#1a1a1a] select-none text-[#f4f3ef]">
+        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[length:120px_100%]" />
 
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle Menu"
+          data-cursor="sticky"
+          className={`fixed top-7 right-7 sm:top-8 sm:right-8 inline-flex flex-col bg-white rounded-full h-12 w-12 items-center justify-center gap-y-1.5 cursor-pointer z-50 p-2.5 group focus:outline-none transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${!isLoaded
+            ? "opacity-0 scale-0"
+            : scrolled && !isOpen
+              ? "scale-0 opacity-0 pointer-events-none"
+              : "scale-100 opacity-100 pointer-events-auto"
+            }`}
+        >
           <div
-            className={`absolute inset-0 pointer-events-none z-10 bg-[#121212]/25 backdrop-blur-[3px] rounded-xl border border-white/[0.03] transition-all duration-1000 ease-out ${isLoaded ? "opacity-100 scale-100" : "opacity-0 scale-[0.98]"
+            className={`h-0.5 w-6 bg-black transition-all duration-300 ease-in-out transform origin-center ${isOpen ? "translate-y-[4px] rotate-45" : ""
               }`}
           />
-
-          <div className="flex justify-between items-center z-30 relative">
-            <div
-              className={`ml-4 mt-4 transition-all duration-700 ease-out ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
-                }`}
-            />
-
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label="Toggle Menu"
-              data-cursor="sticky"
-              className={`fixed top-7 right-7 sm:top-8 sm:right-8 inline-flex flex-col bg-white rounded-full h-12 w-12 items-center justify-center gap-y-1.5 cursor-pointer z-40 p-2.5 group focus:outline-none transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${!isLoaded
-                ? "opacity-0 scale-0"
-                : scrolled && !isOpen
-                  ? "scale-0 opacity-0 pointer-events-none"
-                  : "scale-100 opacity-100 pointer-events-auto"
-                }`}
-            >
-              <div
-                className={`h-0.5 w-6 bg-black transition-all duration-300 ease-in-out transform origin-center ${isOpen ? "translate-y-[4px] rotate-45" : ""
-                  }`}
-              />
-              <div
-                className={`h-0.5 w-6 bg-black transition-all duration-300 ease-in-out transform origin-center ${isOpen ? "-translate-y-[4px] -rotate-45" : ""
-                  }`}
-              />
-            </button>
-          </div>
-
-          <div className="my-auto flex flex-col gap-4 ml-24 z-20 relative">
-            <div className="font-helvetica font-semibold uppercase tracking-tight text-[13vw] leading-[0.85] text-white">
-              <div className="overflow-hidden">
-                <div
-                  className={`transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] delay-300 ${isLoaded ? "translate-y-0" : "translate-y-full"
-                    }`}
-                >
-                  VAIBHAV
-                </div>
-              </div>
-              <div className="overflow-hidden">
-                <div
-                  className={`transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] delay-500 ${isLoaded ? "translate-y-0" : "translate-y-full"
-                    }`}
-                >
-                  SINGH
-                </div>
-              </div>
-            </div>
-
-            <p
-              className={`font-general text-xs text-neutral-300 max-w-lg uppercase leading-normal transition-all duration-1000 ease-out delay-700 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-                }`}
-            >
-              I’M A CREATIVE DEVELOPER PASSIONATE ABOUT TURNING IDEAS INTO MODERN, INTERACTIVE DIGITAL EXPERIENCES. I BLEND WEB DEVELOPMENT, UI DESIGN, AND PERFORMANCE TO CREATE ELEGANT, RESPONSIVE, AND ENGAGING PROJECTS. I BRING IDEAS TO LIFE THROUGH CLEAN CODE, CREATIVE DESIGN, AND A CONSTANT DRIVE TO BUILD SOMETHING BETTER.
-            </p>
-          </div>
-
           <div
-            className={`absolute bottom-8 right-10 flex items-center justify-center w-28 h-28 cursor-pointer group select-none z-30 transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] delay-900 ${isLoaded ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-75 translate-y-6"
+            className={`h-0.5 w-6 bg-black transition-all duration-300 ease-in-out transform origin-center ${isOpen ? "-translate-y-[4px] -rotate-45" : ""
+              }`}
+          />
+        </button>
+
+        <div className="relative z-20 w-full px-6 sm:px-12 md:px-16 pt-16 sm:pt-48">
+          <div
+            className={`text-xs sm:text-sm font-mono tracking-[0.4rem] uppercase text-neutral-400 mb-4 transition-all duration-1000 ease-out delay-200 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               }`}
           >
-            <svg className="w-full h-full animate-[spin_12s_linear_infinite]" viewBox="0 0 100 100">
-              <path
-                id="scrollCirclePath"
-                d="M 50, 50 m -36, 0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0"
-                fill="none"
-              />
-              <text className="font-general text-[7.5px] uppercase tracking-[0.16em] fill-neutral-400 group-hover:fill-white font-medium transition-colors duration-300">
-                <textPath href="#scrollCirclePath" startOffset="0%">
-                  SCROLL DOWN • SCROLL DOWN • SCROLL DOWN •
-                </textPath>
-              </text>
-            </svg>
+            ✦ Full-stack developer
+          </div>
 
-            <div className="absolute inset-0 m-auto w-12 h-12 rounded-full border border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-sm group-hover:border-white/50 group-hover:bg-white/10 transition-colors duration-300">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="1.6" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m0 0l-6-6m6 6l6-6" />
-              </svg>
+          <h1
+            className={`font-instrument font-normal text-[4.5rem] sm:text-[6.5rem] md:text-[9vw] leading-[0.75] text-[#f4f3ef] tracking-tight uppercase whitespace-nowrap transition-all duration-1000 ease-out delay-300 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+              }`}
+          >
+            VAIBHAV SINGH
+          </h1>
+        </div>
+
+        <div className="relative z-20 w-full md:-mt-[2.2vw]">
+          <div className="w-full h-[1.5px] bg-[#f4f3ef]/80" />
+        </div>
+
+        <div className="relative z-20 w-full px-6 sm:px-12 md:px-16 pb-12 sm:pb-16 flex justify-end">
+          <div
+            className={`text-end max-w-2xl font-mono text-sm sm:text-base md:text-lg uppercase text-[#a8a8a3] leading-relaxed tracking-wide flex flex-col gap-2 transition-all duration-1000 ease-out delay-700 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+              }`}
+          >
+            <p>I BUILD FAST, SECURE WEB PRODUCTS END TO END —</p>
+            <p>FROM BACKEND ARCHITECTURE TO INTERFACES</p>
+            <p>PEOPLE ACTUALLY ENJOY USING.</p>
+
+            <div className="mt-6 flex justify-end">
+              <a
+                href="/resume.pdf"
+                download
+                data-cursor="sticky"
+                className="inline-flex w-fit text-sm font-sans text-[#f4f3ef] border-b border-[#f4f3ef]/50 pb-1 hover:border-[#f4f3ef] transition-colors"
+              >
+                Download resume ↗
+              </a>
             </div>
           </div>
         </div>
 
-      </div>
+        <div className="relative z-20 w-full px-6 sm:px-12 md:px-16 pb-6 flex justify-between items-center text-[12px] text-[#6b6b67] font-mono">
+          <span>(01) — Portfolio</span>
+          <a
+            href="#skills"
+            data-cursor="sticky"
+            className="hover:text-white transition-colors duration-300"
+          >
+            Scroll ↓
+          </a>
+        </div>
+      </section>
       <div className="bg-[#E4E5E0] text-[#121212] py-4 sm:py-5 overflow-hidden select-none border-t border-neutral-300">
         <div className="animate-marquee flex items-center whitespace-nowrap font-helvetica text-sm sm:text-base md:text-lg uppercase tracking-[0.22em] font-medium">
           <div className="flex items-center gap-8 sm:gap-12 px-4 sm:px-6">
@@ -389,16 +498,143 @@ export default function Home() {
             <span className="text-xs sm:text-sm opacity-70">✦</span>
             <span>I CODE</span>
             <span className="text-xs sm:text-sm opacity-70">✦</span>
-            <span>CRAFTING DIGITAL EXPERIENCES</span>
+          </div>
+        </div>
+      </div>
+
+      <section
+        id="skills"
+        ref={skillsSectionRef}
+        className="bg-[#E4E5E0] text-[#121212] w-full relative pt-20 sm:pt-28 border-t border-[#121212]/15"
+      >
+        <div className="w-full px-6 sm:px-12 md:px-16 flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
+          <div>
+            <div className="overflow-hidden mb-3">
+              <span
+                ref={skillsTagRef}
+                className="font-amiamie uppercase text-xs sm:text-sm text-[#121212]/60 font-semibold tracking-widest block"
+              >
+                ✦ Technical Stack & Services
+              </span>
+            </div>
+            <div className="overflow-hidden">
+              <h2
+                ref={skillsTitleRef}
+                className="text-7xl sm:text-8xl md:text-[10vw] leading-[0.85] font-normal font-instrument text-[#121212] uppercase tracking-tight inline-block"
+              >
+                SKILLS
+              </h2>
+            </div>
+          </div>
+
+          <p
+            ref={skillsDescRef}
+            className="font-helvetica text-sm sm:text-base text-[#121212]/70 max-w-sm font-medium leading-relaxed"
+          >
+            Scroll down to explore core engineering domains, infrastructure capabilities, and specialized services.
+          </p>
+        </div>
+
+        <div className="w-full relative flex flex-col">
+          {skillCategories.map((cat, idx) => {
+            const topOffset = idx * 64;
+
+            return (
+              <div
+                key={cat.title}
+                ref={addToSkillsCardsRef}
+                style={{
+                  top: `${topOffset}px`,
+                  zIndex: (idx + 1) * 10,
+                }}
+                className="sticky w-full bg-[#121212] text-white shadow-2xl border-t border-neutral-800/90"
+              >
+                <div className="h-[64px] w-full px-6 sm:px-12 md:px-16 flex items-center justify-between border-b border-neutral-800/80 bg-[#121212]/95 backdrop-blur-md">
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-helvetica font-normal tracking-tight text-white card-title">
+                    {cat.title}
+                  </h3>
+                  <span className="text-xs font-mono text-neutral-500 font-medium tracking-widest card-number">
+                    (0{idx + 1})
+                  </span>
+                </div>
+
+                <div className="w-full px-6 sm:px-12 md:px-16 pt-8 pb-16 sm:pb-24 bg-[#121212]">
+                  <p className="text-base sm:text-lg md:text-xl font-sans text-neutral-400 max-w-5xl leading-relaxed mb-10 font-normal card-desc">
+                    {cat.description}
+                  </p>
+
+                  <div className="flex flex-col border-t border-neutral-800/80 w-full">
+                    {cat.subSkills.map((sub) => (
+                      <div
+                        key={sub.name}
+                        className="sub-skill-item py-5 sm:py-6 border-b border-neutral-800/80 flex items-baseline justify-between hover:bg-white/[0.03] px-3 sm:px-6 transition-all duration-300 rounded-lg group cursor-default"
+                      >
+                        <div className="flex items-baseline gap-6 sm:gap-10">
+                          <span className="text-xs sm:text-sm font-mono text-neutral-500 font-medium">
+                            {sub.num}
+                          </span>
+                          <span className="text-lg sm:text-xl md:text-2xl font-sans text-white font-medium tracking-tight group-hover:translate-x-2 transition-transform duration-300">
+                            {sub.name}
+                          </span>
+                        </div>
+
+                        <span className="text-sm font-mono text-neutral-500 group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300">
+                          ↗
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <div className="bg-[#E4E5E0] text-[#121212] py-4 sm:py-5 overflow-hidden select-none border-t border-b border-neutral-300 relative z-30">
+        <div className="animate-marquee flex items-center whitespace-nowrap font-helvetica text-sm sm:text-base md:text-lg uppercase tracking-[0.22em] font-medium">
+          <div className="flex items-center gap-8 sm:gap-12 px-4 sm:px-6">
+            <span>BUILDING EXPERIENCES, NOT JUST WEBSITES</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+            <span>LET’S CREATE SOMETHING WORTH REMEMBERING</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+            <span>GET IN TOUCH</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+          </div>
+
+          <div className="flex items-center gap-8 sm:gap-12 px-4 sm:px-6">
+            <span>BUILDING EXPERIENCES, NOT JUST WEBSITES</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+            <span>LET’S CREATE SOMETHING WORTH REMEMBERING</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+            <span>GET IN TOUCH</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+          </div>
+
+          <div className="flex items-center gap-8 sm:gap-12 px-4 sm:px-6">
+            <span>BUILDING EXPERIENCES, NOT JUST WEBSITES</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+            <span>LET’S CREATE SOMETHING WORTH REMEMBERING</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+            <span>GET IN TOUCH</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+          </div>
+
+          <div className="flex items-center gap-8 sm:gap-12 px-4 sm:px-6">
+            <span>BUILDING EXPERIENCES, NOT JUST WEBSITES</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+            <span>LET’S CREATE SOMETHING WORTH REMEMBERING</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+            <span>GET IN TOUCH</span>
             <span className="text-xs sm:text-sm opacity-70">✦</span>
           </div>
         </div>
       </div>
-      {/* CONTACT SECTION WITH GSAP SCROLLTRIGGER */}
+
       <div
         id="contact"
         ref={contactRef}
-        className="bg-[#121212] h-screen w-screen relative overflow-hidden flex flex-col justify-between"
+        className="bg-[#121212] min-h-screen w-full relative overflow-hidden flex flex-col justify-between pt-10 pb-4"
       >
         <div>
           <div className="p-8 pt-10">
@@ -413,7 +649,7 @@ export default function Home() {
             <div className="overflow-hidden">
               <h1
                 ref={titleRef}
-                className="text-8xl font-semibold text-white inline-block"
+                className="text-8xl font-normal font-instrument text-white inline-block"
               >
                 CONTACT
               </h1>
@@ -422,13 +658,13 @@ export default function Home() {
 
           <div
             ref={lineRef}
-            className="h-[1.5px] w-screen bg-[#E4E5E0] -mt-10 origin-left"
+            className="h-[1.5px] w-full bg-[#E4E5E0] -mt-10 origin-left"
           />
 
           <div className="relative">
             <div
               ref={mindRef}
-              className="absolute top-10 right-10 font-helvetica text-lg text-white"
+              className="absolute top-10 right-10 font-jakarta text-lg text-white"
             >
               <span className="justify-end flex text-neutral-400 font-medium">SOMETHING IN MIND?</span>
               <p className="font-semibold mt-0.5">LET’S CREATE SOMETHING WORTH REMEMBERING.</p>
@@ -437,13 +673,13 @@ export default function Home() {
 
           <div className="px-8 pt-36 flex flex-col gap-1 text-white max-w-2xl">
             <div ref={emailRef}>
-              <span className="text-sm uppercase tracking-widest text-neutral-400 block font-sans font-medium">
+              <span className="text-sm uppercase tracking-widest text-neutral-400 block font-space-mono font-medium">
                 E-MAIL
               </span>
               <div className="border-t border-neutral-800 mb-6">
                 <a
                   href="mailto:vaibhav05dec@gmail.com"
-                  className="text-xl sm:text-2xl font-sans mt-1.5 text-white font-normal hover:text-neutral-300 transition-colors inline-block"
+                  className="text-xl sm:text-2xl font-jakarta mt-1.5 text-white font-normal hover:text-neutral-300 transition-colors inline-block"
                   data-cursor="sticky"
                 >
                   vaibhav05dec@gmail.com
@@ -452,11 +688,11 @@ export default function Home() {
             </div>
 
             <div ref={socialRef}>
-              <span className="text-sm uppercase tracking-widest text-neutral-400 block font-sans font-medium">
+              <span className="text-sm uppercase tracking-widest text-neutral-400 block font-space-mono font-medium">
                 SOCIAL MEDIA
               </span>
               <div className="border-t border-neutral-800">
-                <div className="text-sm sm:text-base font-mono text-white flex flex-wrap gap-3 mt-2 font-medium">
+                <div className="text-sm sm:text-base font-space-mono text-white flex flex-wrap gap-3 mt-2 font-medium">
                   {socialLinks.map((social) => (
                     <a
                       key={social.label}
@@ -475,7 +711,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Giant Full-Width Footer Wordmark with GSAP ScrollTrigger */}
         <div className="w-full overflow-hidden select-none -mb-3 sm:-mb-5 relative">
           <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-white/15 to-transparent blur-3xl pointer-events-none" />
           <h1

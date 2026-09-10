@@ -28,7 +28,33 @@ export default function SmoothScroll({ children }) {
     gsap.ticker.add(updateRaf);
     gsap.ticker.lagSmoothing(0);
 
+    const handleAnchorClick = (e) => {
+      const anchor = e.target.closest('a[href^="#"]');
+      if (anchor) {
+        const href = anchor.getAttribute("href");
+        if (href && href !== "#") {
+          const targetEl = document.querySelector(href);
+          if (targetEl) {
+            e.preventDefault();
+            lenis.scrollTo(targetEl, {
+              duration: 1.4,
+              offset: 0,
+            });
+          }
+        }
+      }
+    };
+
+    document.addEventListener("click", handleAnchorClick);
+
+    const timer = setTimeout(() => {
+      lenis.resize();
+      ScrollTrigger.refresh();
+    }, 500);
+
     return () => {
+      document.removeEventListener("click", handleAnchorClick);
+      clearTimeout(timer);
       lenis.destroy();
       gsap.ticker.remove(updateRaf);
     };
