@@ -7,10 +7,24 @@ import Hero3D from "./components/Hero3D";
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoaded(true), 50);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 80) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navLinks = [
@@ -118,7 +132,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="p-1 bg-[#121212] h-screen w-screen overflow-hidden">
+      <div className="p-1 bg-[#121212] h-screen w-full overflow-hidden">
         <div className="bg-[#121212] p-3 h-full w-full rounded-xl flex flex-col justify-between text-white relative">
           <Hero3D />
 
@@ -137,7 +151,11 @@ export default function Home() {
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle Menu"
               data-cursor="sticky"
-              className={`inline-flex flex-col bg-white rounded-full h-12 w-12 items-center justify-center gap-y-1.5 mr-4 mt-4 cursor-pointer z-30 p-2.5 group focus:outline-none transition-all duration-700 ease-out delay-150 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
+              className={`fixed top-7 right-7 sm:top-8 sm:right-8 inline-flex flex-col bg-white rounded-full h-12 w-12 items-center justify-center gap-y-1.5 cursor-pointer z-40 p-2.5 group focus:outline-none transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${!isLoaded
+                ? "opacity-0 scale-0"
+                : scrolled && !isOpen
+                  ? "scale-0 opacity-0 pointer-events-none"
+                  : "scale-100 opacity-100 pointer-events-auto"
                 }`}
             >
               <div
@@ -201,6 +219,46 @@ export default function Home() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m0 0l-6-6m6 6l6-6" />
               </svg>
             </div>
+          </div>
+        </div>
+
+      </div>
+      <div className="bg-[#E4E5E0] text-[#121212] py-4 sm:py-5 overflow-hidden select-none border-t border-neutral-300">
+        <div className="animate-marquee flex items-center whitespace-nowrap font-helvetica text-sm sm:text-base md:text-lg uppercase tracking-[0.22em] font-medium">
+          <div className="flex items-center gap-8 sm:gap-12 px-4 sm:px-6">
+            <span>YOU IMAGINE</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+            <span>I CODE</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+            <span>CRAFTING DIGITAL EXPERIENCES</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+          </div>
+
+          <div className="flex items-center gap-8 sm:gap-12 px-4 sm:px-6">
+            <span>YOU IMAGINE</span>
+            <span className="text-xl sm:text-xl opacity-70">✦</span>
+            <span>I CODE</span>
+            <span className="text-xl sm:text-xl opacity-70">✦</span>
+            <span>CRAFTING DIGITAL EXPERIENCES</span>
+            <span className="text-xl sm:text-xl opacity-70">✦</span>
+          </div>
+
+          <div className="flex items-center gap-8 sm:gap-12 px-4 sm:px-6">
+            <span>YOU IMAGINE</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+            <span>I CODE</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+            <span>CRAFTING DIGITAL EXPERIENCES</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+          </div>
+
+          <div className="flex items-center gap-8 sm:gap-12 px-4 sm:px-6">
+            <span>YOU IMAGINE</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+            <span>I CODE</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
+            <span>CRAFTING DIGITAL EXPERIENCES</span>
+            <span className="text-xs sm:text-sm opacity-70">✦</span>
           </div>
         </div>
       </div>
