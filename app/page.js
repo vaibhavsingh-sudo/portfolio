@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import CustomCursor from "./components/CustomCursor";
-import Hero3D from "./components/Hero3D";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
