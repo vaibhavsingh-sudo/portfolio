@@ -399,8 +399,8 @@ export default function Home() {
         className={`fixed pointer-events-none z-[100] transition-all duration-300 ease-out hidden md:block ${hoveredProject ? "opacity-100 scale-100" : "opacity-0 scale-95"
           }`}
         style={{
-          left: `${Math.min(previewPos.x + 20, window.innerWidth - 440)}px`,
-          top: `${Math.min(Math.max(previewPos.y - 140, 20), window.innerHeight - 300)}px`,
+          left: `${Math.min(previewPos.x + 20, typeof window !== "undefined" ? window.innerWidth - 440 : 1000)}px`,
+          top: `${Math.min(Math.max(previewPos.y - 140, 20), typeof window !== "undefined" ? window.innerHeight - 300 : 1000)}px`,
         }}
       >
         {hoveredProject && (
@@ -849,7 +849,7 @@ export default function Home() {
 
           <div
             ref={lineRef}
-            className="h-[1.5px] w-full bg-[#E4E5E0] -mt-10 origin-left"
+            className="h-[1.5px] w-full bg-[#E4E5E0] -mt-[45px] origin-left"
           />
 
           <div className="relative">
