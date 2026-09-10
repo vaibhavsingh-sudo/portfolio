@@ -271,8 +271,8 @@ export default function CustomCursor() {
 
       <canvas
         ref={canvasRef}
-        style={{ filter: "url(#liquidGoo)" }}
-        className="fixed top-0 left-0 w-screen h-screen pointer-events-none z-50 mix-blend-difference"
+        style={{ filter: "url(#liquidGoo)", zIndex: 999999 }}
+        className="fixed top-0 left-0 w-screen h-screen pointer-events-none z-[999999] mix-blend-difference"
       />
     </>
   );

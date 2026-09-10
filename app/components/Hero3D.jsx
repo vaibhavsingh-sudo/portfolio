@@ -45,71 +45,80 @@ export default function Hero3D() {
 
     const particleTexture = createMicroParticleTexture();
 
-    const particleCount = 25000;
+    const particleCount = 60000;
     const geometry = new THREE.BufferGeometry();
 
     const positions = new Float32Array(particleCount * 3);
-    const basePositions = new Float32Array(particleCount * 3);
-    const velocities = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
-    const phases = new Float32Array(particleCount);
+
+    const tParam = new Float32Array(particleCount);
+    const uParam = new Float32Array(particleCount);
+    const sParam = new Float32Array(particleCount);
+    const phase = new Float32Array(particleCount);
+    const particleKind = new Uint8Array(particleCount);
 
     const colorWhite = new THREE.Color(0xffffff);
-    const colorCyan = new THREE.Color(0x38bdf8);
-    const colorElectricBlue = new THREE.Color(0x0284c7);
+    const colorCyan = new THREE.Color(0x7dd3fc);
+    const colorElectricBlue = new THREE.Color(0x0ea5e9);
     const colorDeepBlue = new THREE.Color(0x1d4ed8);
-    const colorIndigo = new THREE.Color(0x6366f1);
+    const colorIndigo = new THREE.Color(0x4338ca);
 
     for (let i = 0; i < particleCount; i++) {
-      const radius = Math.pow(Math.random(), 1.6) * 3.8;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos((Math.random() - 0.5) * 2);
+      const t = Math.random() * Math.PI * 2;
+      phase[i] = Math.random() * Math.PI * 2;
 
-      const x = radius * Math.sin(phi) * Math.cos(theta);
-      const y = radius * Math.sin(phi) * Math.sin(theta);
-      const z = radius * Math.cos(phi) * 0.7;
+      const roll = Math.random();
+      let u, kind, colorBase;
 
-      positions[i * 3] = x;
-      positions[i * 3 + 1] = y;
-      positions[i * 3 + 2] = z;
-
-      basePositions[i * 3] = x;
-      basePositions[i * 3 + 1] = y;
-      basePositions[i * 3 + 2] = z;
-
-      phases[i] = Math.random() * Math.PI * 2;
-
-      const normDist = radius / 3.8;
-      const color =
-        normDist < 0.2
-          ? colorWhite.clone().lerp(colorCyan, normDist / 0.2)
-          : normDist < 0.55
-            ? colorCyan.clone().lerp(colorElectricBlue, (normDist - 0.2) / 0.35)
-            : colorElectricBlue.clone().lerp(colorDeepBlue, (normDist - 0.55) / 0.45);
-
-      if (Math.random() < 0.12) {
-        color.lerp(colorIndigo, 0.5);
+      if (roll < 0.08) {
+        u = 0.85 + Math.random() * 0.15;
+        kind = 1;
+        colorBase = colorWhite.clone().lerp(colorCyan, 0.35 + Math.random() * 0.3);
+      } else if (roll < 0.16) {
+        u = -(0.85 + Math.random() * 0.15);
+        kind = 2;
+        colorBase = colorWhite.clone().lerp(colorCyan, 0.45 + Math.random() * 0.3);
+      } else {
+        u = (Math.random() * 2 - 1) * 0.95;
+        kind = 0;
+        const depth = Math.abs(u);
+        colorBase =
+          depth < 0.3
+            ? colorCyan.clone().lerp(colorElectricBlue, depth / 0.3)
+            : colorElectricBlue.clone().lerp(colorDeepBlue, (depth - 0.3) / 0.7);
+        if (Math.random() < 0.1) colorBase.lerp(colorIndigo, 0.4);
       }
 
-      colors[i * 3] = color.r;
-      colors[i * 3 + 1] = color.g;
-      colors[i * 3 + 2] = color.b;
+      tParam[i] = t;
+      uParam[i] = u;
+      sParam[i] = (Math.random() * 2 - 1) * (kind === 0 ? 1 : 0.4);
+      particleKind[i] = kind;
+
+      colors[i * 3] = colorBase.r;
+      colors[i * 3 + 1] = colorBase.g;
+      colors[i * 3 + 2] = colorBase.b;
+
+      positions[i * 3] = 0;
+      positions[i * 3 + 1] = 0;
+      positions[i * 3 + 2] = 0;
     }
 
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
     const material = new THREE.PointsMaterial({
-      size: 0.042,
+      size: 0.06,
       map: particleTexture,
       vertexColors: true,
       transparent: true,
-      opacity: 0.92,
+      opacity: 0.97,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
     });
 
     const particleSystem = new THREE.Points(geometry, material);
+    particleSystem.rotation.x = 0.55;
+    particleSystem.rotation.z = -0.12;
     scene.add(particleSystem);
 
     let mouseWorldX = -100;
@@ -158,9 +167,15 @@ export default function Hero3D() {
     let time = 0;
     let reqId;
 
+    const BASE_RX = 3.3;
+    const BASE_RY = 1.5;
+    const BASE_WIDTH = 0.9;
+    const BASE_THICKNESS = 0.16;
+    const BASE_TWIST = 1.7;
+
     const animate = () => {
       reqId = requestAnimationFrame(animate);
-      time += 0.008;
+      time += 0.011;
 
       currentCamX += (targetCamX - currentCamX) * 0.04;
       currentCamY += (targetCamY - currentCamY) * 0.04;
@@ -169,58 +184,71 @@ export default function Hero3D() {
       camera.position.y = currentCamY;
       camera.lookAt(0, 0, 0);
 
+      const k = BASE_TWIST + Math.sin(time * 0.28) * 0.45;
+      const Rx = BASE_RX * (1 + Math.sin(time * 0.35) * 0.05);
+      const Ry = BASE_RY * (1 + Math.cos(time * 0.4) * 0.08);
+      const ribbonWidth = BASE_WIDTH * (1 + Math.sin(time * 0.5) * 0.12);
+      const thickness = BASE_THICKNESS * (1 + Math.cos(time * 0.55) * 0.4);
+
+      const pulsePos = (time * 0.4) % (Math.PI * 2);
+
       const posAttr = geometry.attributes.position;
       const posArr = posAttr.array;
+      const colorAttr = geometry.attributes.color;
+      const colorArr = colorAttr.array;
 
-      const mouseRadius = 3.6;
-      const mouseForce = 0.16;
-
-      const morph1 = Math.sin(time * 0.35);
-      const morph2 = Math.cos(time * 0.45);
-      const morph3 = Math.sin(time * 0.25);
+      const mouseRadius = 3.2;
+      const mouseForce = 0.15;
 
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
 
-        let bx = basePositions[i3];
-        let by = basePositions[i3 + 1];
-        let bz = basePositions[i3 + 2];
+        const t = tParam[i];
+        const u = uParam[i];
+        const s = sParam[i];
+        const ph = phase[i];
+        const kind = particleKind[i];
 
-        const ph = phases[i];
+        const twistAngle = k * t;
+        const w = u * ribbonWidth * Math.cos(twistAngle);
 
-        const waveA = Math.sin(bx * 0.6 + time * 1.2 + ph) * (1.1 + morph1 * 0.5);
-        const waveB = Math.cos(by * 0.7 + time * 0.9 + ph) * (1.0 + morph2 * 0.4);
-        const waveC = Math.sin((bx + by) * 0.4 + time * 0.7 + ph) * (0.8 + morph3 * 0.6);
+        let x = (Rx + w) * Math.cos(t);
+        let y = (Ry + w) * Math.sin(t);
+        let z = u * ribbonWidth * Math.sin(twistAngle) * 0.95 + s * thickness;
 
-        let targetX = bx + (waveA + waveC) * 0.45 + Math.sin(time * 0.5 + by) * 0.25;
-        let targetY = by + (waveB + waveA) * 0.4 + Math.cos(time * 0.4 + bx) * 0.2;
-        let targetZ = bz + (waveC * waveB) * 0.35 + Math.sin(time * 0.6 + ph) * 0.15;
+        x += Math.sin(time * 1.2 + ph) * 0.015;
+        y += Math.cos(time * 1.4 + ph) * 0.015;
+        z += Math.sin(time * 1.7 + ph) * 0.02;
 
-        const stretch = 1.0 + Math.sin(time * 0.3 + bx * 0.3) * 0.35;
-        targetX *= stretch;
-        targetY /= stretch * 0.9;
-
-        const dx = targetX - mouseWorldX;
-        const dy = targetY - mouseWorldY;
+        const dx = x - mouseWorldX;
+        const dy = y - mouseWorldY;
         const distSq = dx * dx + dy * dy;
-
         if (distSq < mouseRadius * mouseRadius && distSq > 0.001) {
           const dist = Math.sqrt(distSq);
           const force = (1 - dist / mouseRadius) * mouseForce;
-          targetX += (dx / dist) * force * 1.8;
-          targetY += (dy / dist) * force * 1.8;
-          targetZ += force * 2.2;
+          x += (dx / dist) * force * 1.6;
+          y += (dy / dist) * force * 1.6;
+          z += force * 1.8;
         }
 
-        posArr[i3] += (targetX - posArr[i3]) * 0.06;
-        posArr[i3 + 1] += (targetY - posArr[i3 + 1]) * 0.06;
-        posArr[i3 + 2] += (targetZ - posArr[i3 + 2]) * 0.06;
+        posArr[i3] += (x - posArr[i3]) * 0.1;
+        posArr[i3 + 1] += (y - posArr[i3 + 1]) * 0.1;
+        posArr[i3 + 2] += (z - posArr[i3 + 2]) * 0.1;
+
+        if (kind !== 0) {
+          let diff = Math.abs(t - pulsePos);
+          if (diff > Math.PI) diff = Math.PI * 2 - diff;
+          const boost = Math.max(0, 1 - diff / 0.9) * 0.6;
+          colorArr[i3] = Math.min(1, colorArr[i3] + boost * 0.15);
+          colorArr[i3 + 1] = Math.min(1, colorArr[i3 + 1] + boost * 0.15);
+          colorArr[i3 + 2] = Math.min(1, colorArr[i3 + 2] + boost * 0.1);
+        }
       }
 
       posAttr.needsUpdate = true;
+      colorAttr.needsUpdate = true;
 
-      particleSystem.rotation.z = Math.sin(time * 0.08) * 0.08;
-      particleSystem.rotation.y = time * 0.04;
+      particleSystem.rotation.y = time * 0.09;
 
       renderer.render(scene, camera);
     };
@@ -248,6 +276,3 @@ export default function Hero3D() {
     />
   );
 }
-
-
-
