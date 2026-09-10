@@ -26,9 +26,22 @@ export default function Home() {
   const skillsCardsRef = useRef([]);
   skillsCardsRef.current = [];
 
+  const workSectionRef = useRef(null);
+  const workTagRef = useRef(null);
+  const workTitleRef = useRef(null);
+  const workDescRef = useRef(null);
+  const workCardsRef = useRef([]);
+  workCardsRef.current = [];
+
   const addToSkillsCardsRef = (el) => {
     if (el && !skillsCardsRef.current.includes(el)) {
       skillsCardsRef.current.push(el);
+    }
+  };
+
+  const addToWorkCardsRef = (el) => {
+    if (el && !workCardsRef.current.includes(el)) {
+      workCardsRef.current.push(el);
     }
   };
 
@@ -228,12 +241,66 @@ export default function Home() {
             "-=0.5"
           );
       });
+
+      const workHeaderTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: workSectionRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+      });
+
+      workHeaderTl
+        .fromTo(
+          workTagRef.current,
+          { y: 25, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }
+        )
+        .fromTo(
+          workTitleRef.current,
+          { yPercent: 100, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 1, ease: "power4.out" },
+          "-=0.6"
+        )
+        .fromTo(
+          workDescRef.current,
+          { y: 25, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+          "-=0.6"
+        );
+
+      workCardsRef.current.forEach((card) => {
+        if (!card) return;
+
+        const cardTitle = card.querySelector(".card-title");
+        const cardNumber = card.querySelector(".card-number");
+        const cardDesc = card.querySelector(".card-desc");
+
+        const cardTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+        });
+
+        cardTl
+          .fromTo(
+            [cardTitle, cardNumber],
+            { y: 20, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.1 }
+          )
+          .fromTo(
+            cardDesc,
+            { y: 25, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+            "-=0.4"
+          );
+      });
     });
 
     return () => ctx.revert();
   }, []);
-
-  const [activeSkillCategory, setActiveSkillCategory] = useState(0);
 
   const skillCategories = [
     {
@@ -282,10 +349,48 @@ export default function Home() {
     },
   ];
 
+  const workProjects = [
+    {
+      id: "01",
+      title: "Nexus AI Platform",
+      category: "SAAS PLATFORM / AI ENGINE",
+      description:
+        "Enterprise intelligence workspace featuring real-time vector embeddings, semantic document search, and team collaboration workflows.",
+      tags: ["Next.js 14", "PostgreSQL", "Pinecone", "Tailwind CSS", "WebSockets"],
+      year: "2024",
+    },
+    {
+      id: "02",
+      title: "Aether Telemetry Console",
+      category: "CLOUD INFRASTRUCTURE / METRICS",
+      description:
+        "High-frequency server monitoring console rendering live node telemetry, automated alert routing, and custom cluster diagnostics.",
+      tags: ["React", "Node.js", "Docker", "TimescaleDB", "Recharts"],
+      year: "2024",
+    },
+    {
+      id: "03",
+      title: "Velox Storefront Engine",
+      category: "E-COMMERCE / HEADLESS ENGINE",
+      description:
+        "Headless e-commerce platform engineered for sub-second page transitions, dynamic inventory sync, and conversion-optimized checkout.",
+      tags: ["Next.js", "Stripe API", "GraphQL", "Redis Caching", "GSAP"],
+      year: "2023",
+    },
+    {
+      id: "04",
+      title: "Krypton Event Pipeline",
+      category: "ANALYTICS / REAL-TIME PIPELINES",
+      description:
+        "Distributed event tracking system processing millions of telemetry events per day with instant interactive data visualization dashboards.",
+      tags: ["TypeScript", "Go", "Kafka", "ClickHouse", "Tailwind CSS"],
+      year: "2023",
+    },
+  ];
+
   const navLinks = [
     { label: "HOME", href: "#" },
     { label: "SKILLS", href: "#skills" },
-    { label: "ABOUT", href: "#about" },
     { label: "WORK", href: "#work" },
     { label: "CONTACT", href: "#contact" },
   ];
@@ -309,7 +414,7 @@ export default function Home() {
 
       <div
         ref={sideNavRef}
-        className="bg-[#E4E5E0] text-[#121212] w-full sm:w-[580px] md:w-[52vw] lg:w-[48vw] min-w-[320px] h-screen fixed top-0 right-0 z-50 px-6 sm:px-8 md:px-10 py-8 sm:py-10 shadow-2xl flex flex-col justify-between overflow-hidden opacity-0 pointer-events-none"
+        className="bg-[#E4E5E0] text-[#121212] w-full sm:w-[580px] md:w-[52vw] lg:w-[48vw] min-w-[320px] h-screen fixed top-0 right-0 z-50 px-6 sm:px-8 md:px-10 py-8 sm:py-10 flex flex-col justify-between overflow-hidden opacity-0 pointer-events-none"
       >
         <div className="flex justify-end items-center">
           <button
@@ -463,6 +568,7 @@ export default function Home() {
           </a>
         </div>
       </section>
+
       <div className="bg-[#E4E5E0] text-[#121212] py-4 sm:py-5 overflow-hidden select-none border-t border-neutral-300">
         <div className="animate-marquee flex items-center whitespace-nowrap font-helvetica text-sm sm:text-base md:text-lg uppercase tracking-[0.22em] font-medium">
           <div className="flex items-center gap-8 sm:gap-12 px-4 sm:px-6">
@@ -546,7 +652,7 @@ export default function Home() {
                   top: `${topOffset}px`,
                   zIndex: (idx + 1) * 10,
                 }}
-                className="sticky w-full bg-[#121212] text-white shadow-2xl border-t border-neutral-800/90"
+                className="sticky w-full bg-[#121212] text-white border-t border-neutral-800/90"
               >
                 <div className="h-[64px] w-full px-6 sm:px-12 md:px-16 flex items-center justify-between border-b border-neutral-800/80 bg-[#121212]/95 backdrop-blur-md">
                   <h3 className="text-2xl sm:text-3xl md:text-4xl font-helvetica font-normal tracking-tight text-white card-title">
@@ -582,6 +688,105 @@ export default function Home() {
                         </span>
                       </div>
                     ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section
+        id="work"
+        ref={workSectionRef}
+        className="bg-[#E4E5E0] text-[#121212] w-full relative pt-20 sm:pt-28 border-t border-[#121212]/15"
+      >
+        <div className="w-full px-6 sm:px-12 md:px-16 flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
+          <div>
+            <div className="overflow-hidden mb-3">
+              <span
+                ref={workTagRef}
+                className="font-amiamie uppercase text-xs sm:text-sm text-[#121212]/60 font-semibold tracking-widest block"
+              >
+                ✦ Featured Projects & Systems
+              </span>
+            </div>
+            <div className="overflow-hidden">
+              <h2
+                ref={workTitleRef}
+                className="text-7xl sm:text-8xl md:text-[10vw] leading-[0.85] font-normal font-instrument text-[#121212] uppercase tracking-tight inline-block"
+              >
+                WORK
+              </h2>
+            </div>
+          </div>
+
+          <p
+            ref={workDescRef}
+            className="font-helvetica text-sm sm:text-base text-[#121212]/70 max-w-sm font-medium leading-relaxed"
+          >
+            Explore a curated index of production web applications, telemetry engines, and high-performance digital products.
+          </p>
+        </div>
+
+        <div className="w-full relative flex flex-col">
+          {workProjects.map((project, idx) => {
+            const topOffset = idx * 64;
+
+            return (
+              <div
+                key={project.title}
+                ref={addToWorkCardsRef}
+                style={{
+                  top: `${topOffset}px`,
+                  zIndex: (idx + 1) * 10,
+                }}
+                className="sticky w-full bg-[#121212] text-white border-t border-neutral-800/90"
+              >
+                <div className="h-[64px] w-full px-6 sm:px-12 md:px-16 flex items-center justify-between border-b border-neutral-800/80 bg-[#121212]/95 backdrop-blur-md">
+                  <div className="flex items-center gap-4">
+                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-helvetica font-normal tracking-tight text-white card-title">
+                      {project.title}
+                    </h3>
+                    <span className="text-[10px] font-mono uppercase bg-white/10 px-2.5 py-1 rounded text-neutral-300 hidden sm:inline-block">
+                      {project.year}
+                    </span>
+                  </div>
+                  <span className="text-xs font-mono text-neutral-500 font-medium tracking-widest card-number">
+                    (0{idx + 1})
+                  </span>
+                </div>
+
+                <div className="w-full px-6 sm:px-12 md:px-16 pt-8 pb-16 sm:pb-24 bg-[#121212]">
+                  <div className="mb-4">
+                    <span className="text-xs font-mono uppercase text-neutral-500 tracking-widest font-semibold block mb-2">
+                      {project.category}
+                    </span>
+                    <p className="text-base sm:text-lg md:text-xl font-sans text-neutral-400 max-w-5xl leading-relaxed font-normal card-desc">
+                      {project.description}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2.5 my-8">
+                    {project.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-xs font-mono bg-white/[0.04] text-neutral-300 border border-white/[0.08] px-3 py-1.5 rounded-full"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="border-t border-neutral-800/80 pt-6 flex justify-end">
+                    <a
+                      href="#contact"
+                      data-cursor="sticky"
+                      className="inline-flex items-center gap-2 text-sm font-mono text-white hover:text-neutral-300 border-b border-white/40 pb-1 hover:border-white transition-colors"
+                    >
+                      <span>Explore Case Study</span>
+                      <span>↗</span>
+                    </a>
                   </div>
                 </div>
               </div>
