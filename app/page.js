@@ -395,7 +395,6 @@ export default function Home() {
     <>
       <CustomCursor />
 
-      {/* Small Hover Preview Modal - Only Visible When Hovered */}
       <div
         className={`fixed pointer-events-none z-[100] transition-all duration-300 ease-out hidden md:block ${hoveredProject ? "opacity-100 scale-100" : "opacity-0 scale-95"
           }`}
@@ -705,7 +704,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* WORKS SECTION - MATCHING SKILLS SECTION HEADER & STYLING */}
       <section
         id="work"
         ref={workSectionRef}
