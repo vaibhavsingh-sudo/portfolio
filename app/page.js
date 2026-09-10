@@ -10,6 +10,9 @@ export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  const [hoveredProject, setHoveredProject] = useState(null);
+  const [previewPos, setPreviewPos] = useState({ x: 0, y: 0 });
+
   const contactRef = useRef(null);
   const tagRef = useRef(null);
   const titleRef = useRef(null);
@@ -61,6 +64,15 @@ export default function Home() {
   useEffect(() => {
     const timer = setTimeout(() => setIsLoaded(true), 50);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMoveWindow = (e) => {
+      setPreviewPos({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMoveWindow);
+    return () => window.removeEventListener("mousemove", handleMouseMoveWindow);
   }, []);
 
   useEffect(() => {
@@ -268,35 +280,6 @@ export default function Home() {
           { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
           "-=0.6"
         );
-
-      workCardsRef.current.forEach((card) => {
-        if (!card) return;
-
-        const cardTitle = card.querySelector(".card-title");
-        const cardNumber = card.querySelector(".card-number");
-        const cardDesc = card.querySelector(".card-desc");
-
-        const cardTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        });
-
-        cardTl
-          .fromTo(
-            [cardTitle, cardNumber],
-            { y: 20, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.1 }
-          )
-          .fromTo(
-            cardDesc,
-            { y: 25, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
-            "-=0.4"
-          );
-      });
     });
 
     return () => ctx.revert();
@@ -352,59 +335,85 @@ export default function Home() {
   const workProjects = [
     {
       id: "01",
-      title: "Nexus AI Platform",
-      category: "SAAS PLATFORM / AI ENGINE",
-      description:
-        "Enterprise intelligence workspace featuring real-time vector embeddings, semantic document search, and team collaboration workflows.",
-      tags: ["Next.js 14", "PostgreSQL", "Pinecone", "Tailwind CSS", "WebSockets"],
-      year: "2024",
+      title: "Plant Shop E-commerce",
+      tags: ["REACT", "NEXT.JS", "STRIPE API", "TAILWIND CSS"],
+      image: "/previews/velox.png",
+      href: "#contact",
     },
     {
       id: "02",
-      title: "Aether Telemetry Console",
-      category: "CLOUD INFRASTRUCTURE / METRICS",
-      description:
-        "High-frequency server monitoring console rendering live node telemetry, automated alert routing, and custom cluster diagnostics.",
-      tags: ["React", "Node.js", "Docker", "TimescaleDB", "Recharts"],
-      year: "2024",
+      title: "Nexus AI Workspace",
+      tags: ["REACT", "NEXT.JS 14", "PINECONE", "TAILWIND CSS"],
+      image: "/previews/nexus.png",
+      href: "#contact",
     },
     {
       id: "03",
-      title: "Velox Storefront Engine",
-      category: "E-COMMERCE / HEADLESS ENGINE",
-      description:
-        "Headless e-commerce platform engineered for sub-second page transitions, dynamic inventory sync, and conversion-optimized checkout.",
-      tags: ["Next.js", "Stripe API", "GraphQL", "Redis Caching", "GSAP"],
-      year: "2023",
+      title: "Aether Telemetry Dashboard",
+      tags: ["REACT", "NODE.JS", "DOCKER", "TIMESCALEDB"],
+      image: "/previews/aether.png",
+      href: "#contact",
     },
     {
       id: "04",
       title: "Krypton Event Pipeline",
-      category: "ANALYTICS / REAL-TIME PIPELINES",
-      description:
-        "Distributed event tracking system processing millions of telemetry events per day with instant interactive data visualization dashboards.",
-      tags: ["TypeScript", "Go", "Kafka", "ClickHouse", "Tailwind CSS"],
-      year: "2023",
+      tags: ["TYPESCRIPT", "GO", "KAFKA", "CLICKHOUSE"],
+      image: "/previews/krypton.png",
+      href: "#contact",
+    },
+    {
+      id: "05",
+      title: "Velox Digital Storefront",
+      tags: ["REACT", "NEXT.JS", "GRAPHQL", "TAILWIND CSS"],
+      image: "/previews/velox.png",
+      href: "#contact",
+    },
+    {
+      id: "06",
+      title: "Pulse Realtime Analytics",
+      tags: ["NEXT.JS", "WEBSOCKETS", "REDIS", "TAILWIND CSS"],
+      image: "/previews/aether.png",
+      href: "#contact",
     },
   ];
 
   const navLinks = [
     { label: "HOME", href: "#" },
     { label: "SKILLS", href: "#skills" },
-    { label: "WORK", href: "#work" },
+    { label: "WORKS", href: "#work" },
     { label: "CONTACT", href: "#contact" },
   ];
 
   const socialLinks = [
-    { label: "INSTAGRAM", href: "https://instagram.com" },
-    { label: "X", href: "https://youtube.com" },
-    { label: "LINKEDIN", href: "https://linkedin.com" },
-    { label: "GITHUB", href: "https://github.com" },
+    { label: "INSTAGRAM", href: "https://www.instagram.com/the.vaibhavvsingh" },
+    { label: "X", href: "https://x.com/Vaibhav05943" },
+    { label: "LINKEDIN", href: "https://www.linkedin.com/in/vaibhav-singh-877a45389/" },
+    { label: "GITHUB", href: "https://github.com/vaibhavsingh-sudo" },
   ];
 
   return (
     <>
       <CustomCursor />
+
+      {/* Small Hover Preview Modal - Only Visible When Hovered */}
+      <div
+        className={`fixed pointer-events-none z-[100] transition-all duration-300 ease-out hidden md:block ${hoveredProject ? "opacity-100 scale-100" : "opacity-0 scale-95"
+          }`}
+        style={{
+          left: `${Math.min(previewPos.x + 20, window.innerWidth - 440)}px`,
+          top: `${Math.min(Math.max(previewPos.y - 140, 20), window.innerHeight - 300)}px`,
+        }}
+      >
+        {hoveredProject && (
+          <div className="w-[380px] sm:w-[440px] h-[230px] sm:h-[270px] bg-[#121212] border-4 border-[#121212] rounded-lg overflow-hidden shadow-2xl relative">
+            <img
+              src={hoveredProject.image}
+              alt={hoveredProject.title}
+              className="w-full h-full object-cover object-top"
+            />
+          </div>
+        )}
+      </div>
 
       <div
         ref={backdropRef}
@@ -696,10 +705,11 @@ export default function Home() {
         </div>
       </section>
 
+      {/* WORKS SECTION - MATCHING SKILLS SECTION HEADER & STYLING */}
       <section
         id="work"
         ref={workSectionRef}
-        className="bg-[#E4E5E0] text-[#121212] w-full relative pt-20 sm:pt-28 border-t border-[#121212]/15"
+        className="bg-[#E4E5E0] text-[#121212] w-full relative pt-20 sm:pt-28 pb-0 border-t border-[#121212]/15 select-none"
       >
         <div className="w-full px-6 sm:px-12 md:px-16 flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
           <div>
@@ -708,7 +718,7 @@ export default function Home() {
                 ref={workTagRef}
                 className="font-amiamie uppercase text-xs sm:text-sm text-[#121212]/60 font-semibold tracking-widest block"
               >
-                ✦ Featured Projects & Systems
+                ✦ Selected Works
               </span>
             </div>
             <div className="overflow-hidden">
@@ -716,7 +726,7 @@ export default function Home() {
                 ref={workTitleRef}
                 className="text-7xl sm:text-8xl md:text-[10vw] leading-[0.85] font-normal font-instrument text-[#121212] uppercase tracking-tight inline-block"
               >
-                WORK
+                WORKS
               </h2>
             </div>
           </div>
@@ -725,71 +735,50 @@ export default function Home() {
             ref={workDescRef}
             className="font-helvetica text-sm sm:text-base text-[#121212]/70 max-w-sm font-medium leading-relaxed"
           >
-            Explore a curated index of production web applications, telemetry engines, and high-performance digital products.
+            METICULOUSLY CRAFTED DIGITAL PRODUCTS & HIGH-PERFORMANCE WEB SYSTEMS BUILT TO DRIVE REAL IMPACT.
           </p>
         </div>
 
-        <div className="w-full relative flex flex-col">
-          {workProjects.map((project, idx) => {
-            const topOffset = idx * 64;
+        <div className="w-full border-t border-[#121212]/20 flex flex-col">
+          {workProjects.map((project) => {
+            const isHovered = hoveredProject?.title === project.title;
 
             return (
-              <div
+              <a
                 key={project.title}
-                ref={addToWorkCardsRef}
-                style={{
-                  top: `${topOffset}px`,
-                  zIndex: (idx + 1) * 10,
-                }}
-                className="sticky w-full bg-[#121212] text-white border-t border-neutral-800/90"
+                href={project.href}
+                onMouseEnter={() => setHoveredProject(project)}
+                onMouseLeave={() => setHoveredProject(null)}
+                data-cursor="sticky"
+                className={`w-full px-6 sm:px-12 md:px-16 py-6 sm:py-7 border-b border-neutral-800/90 transition-all duration-300 flex items-center justify-between group ${isHovered
+                  ? "bg-[#E4E5E0] text-[#121212] pl-8 sm:pl-16 md:pl-20"
+                  : "bg-[#121212] text-[#f4f3ef]"
+                  }`}
               >
-                <div className="h-[64px] w-full px-6 sm:px-12 md:px-16 flex items-center justify-between border-b border-neutral-800/80 bg-[#121212]/95 backdrop-blur-md">
-                  <div className="flex items-center gap-4">
-                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-helvetica font-normal tracking-tight text-white card-title">
-                      {project.title}
-                    </h3>
-                    <span className="text-[10px] font-mono uppercase bg-white/10 px-2.5 py-1 rounded text-neutral-300 hidden sm:inline-block">
-                      {project.year}
-                    </span>
+                <div className="flex flex-col gap-1.5">
+                  <h3
+                    className={`text-2xl sm:text-3xl md:text-4xl font-sans font-normal tracking-tight uppercase transition-colors duration-300 ${isHovered ? "text-[#121212]" : "text-[#f4f3ef]"
+                      }`}
+                  >
+                    {project.title}
+                  </h3>
+                  <div
+                    className={`flex flex-wrap items-center gap-2 text-[10px] sm:text-xs font-mono uppercase tracking-widest transition-colors duration-300 ${isHovered ? "text-[#121212]/75" : "text-neutral-400"
+                      }`}
+                  >
+                    {project.tags.join("   ")}
                   </div>
-                  <span className="text-xs font-mono text-neutral-500 font-medium tracking-widest card-number">
-                    (0{idx + 1})
+                </div>
+
+                <div className="flex items-center">
+                  <span
+                    className={`text-xl sm:text-2xl font-mono transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 ${isHovered ? "text-[#121212]" : "text-[#f4f3ef]"
+                      }`}
+                  >
+                    ↗
                   </span>
                 </div>
-
-                <div className="w-full px-6 sm:px-12 md:px-16 pt-8 pb-16 sm:pb-24 bg-[#121212]">
-                  <div className="mb-4">
-                    <span className="text-xs font-mono uppercase text-neutral-500 tracking-widest font-semibold block mb-2">
-                      {project.category}
-                    </span>
-                    <p className="text-base sm:text-lg md:text-xl font-sans text-neutral-400 max-w-5xl leading-relaxed font-normal card-desc">
-                      {project.description}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2.5 my-8">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs font-mono bg-white/[0.04] text-neutral-300 border border-white/[0.08] px-3 py-1.5 rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="border-t border-neutral-800/80 pt-6 flex justify-end">
-                    <a
-                      href="#contact"
-                      data-cursor="sticky"
-                      className="inline-flex items-center gap-2 text-sm font-mono text-white hover:text-neutral-300 border-b border-white/40 pb-1 hover:border-white transition-colors"
-                    >
-                      <span>Explore Case Study</span>
-                      <span>↗</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
+              </a>
             );
           })}
         </div>
@@ -896,7 +885,7 @@ export default function Home() {
                 SOCIAL MEDIA
               </span>
               <div className="border-t border-neutral-800">
-                <div className="text-sm sm:text-base font-space-mono text-white flex flex-wrap gap-3 mt-2 font-medium">
+                <div className="text-sm sm:text-base font-space-mono text-[#121212] flex flex-wrap gap-3 mt-2 font-medium">
                   {socialLinks.map((social) => (
                     <a
                       key={social.label}
@@ -904,7 +893,7 @@ export default function Home() {
                       target="_blank"
                       rel="noreferrer"
                       data-cursor="sticky"
-                      className="hover:text-neutral-400 transition-colors"
+                      className="hover:text-neutral-400 transition-colors text-white"
                     >
                       &#123;{social.label}&#125;
                     </a>
