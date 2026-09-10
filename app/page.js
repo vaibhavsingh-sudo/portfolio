@@ -1,18 +1,97 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import CustomCursor from "./components/CustomCursor";
 import Hero3D from "./components/Hero3D";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  const contactRef = useRef(null);
+  const tagRef = useRef(null);
+  const titleRef = useRef(null);
+  const lineRef = useRef(null);
+  const mindRef = useRef(null);
+  const emailRef = useRef(null);
+  const socialRef = useRef(null);
+  const wordmarkRef = useRef(null);
+
+  const sideNavRef = useRef(null);
+  const backdropRef = useRef(null);
+  const menuTimeline = useRef(null);
+  const navItemRefs = useRef([]);
+  navItemRefs.current = [];
+  const navFooterRef = useRef(null);
+
+  const addToNavRefs = (el) => {
+    if (el && !navItemRefs.current.includes(el)) {
+      navItemRefs.current.push(el);
+    }
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => setIsLoaded(true), 50);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    const tl = gsap.timeline({ paused: true });
+
+    tl.to(backdropRef.current, {
+      opacity: 1,
+      pointerEvents: "auto",
+      duration: 0.4,
+      ease: "power2.out",
+    })
+      .fromTo(
+        sideNavRef.current,
+        { xPercent: 100, opacity: 0 },
+        {
+          xPercent: 0,
+          opacity: 1,
+          pointerEvents: "auto",
+          duration: 0.75,
+          ease: "expo.out",
+        },
+        "-=0.3"
+      )
+      .fromTo(
+        navItemRefs.current,
+        { yPercent: 100, opacity: 0 },
+        {
+          yPercent: 0,
+          opacity: 1,
+          duration: 0.7,
+          stagger: 0.08,
+          ease: "power4.out",
+        },
+        "-=0.4"
+      )
+      .fromTo(
+        navFooterRef.current,
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" },
+        "-=0.4"
+      );
+
+    menuTimeline.current = tl;
+
+    return () => {
+      tl.kill();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      menuTimeline.current?.play();
+    } else {
+      menuTimeline.current?.reverse();
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +104,58 @@ export default function Home() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: contactRef.current,
+          start: "top 75%",
+          toggleActions: "play none none reverse",
+        },
+      });
+
+      tl.fromTo(
+        tagRef.current,
+        { y: 25, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }
+      )
+        .fromTo(
+          titleRef.current,
+          { yPercent: 100, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 1, ease: "power4.out" },
+          "-=0.6"
+        )
+        .fromTo(
+          lineRef.current,
+          { scaleX: 0, opacity: 0 },
+          { scaleX: 1, opacity: 1, duration: 1.2, ease: "power3.inOut" },
+          "-=0.7"
+        )
+        .fromTo(
+          mindRef.current,
+          { y: 25, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+          "-=0.7"
+        )
+        .fromTo(
+          [emailRef.current, socialRef.current],
+          { y: 35, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, stagger: 0.15, ease: "power3.out" },
+          "-=0.6"
+        )
+        .fromTo(
+          wordmarkRef.current,
+          { yPercent: 100, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 1.1, ease: "power3.out" },
+          "-=0.5"
+        );
+    }, contactRef);
+
+    return () => ctx.revert();
   }, []);
 
   const navLinks = [
@@ -46,15 +177,17 @@ export default function Home() {
     <>
       <CustomCursor />
 
+      {/* Backdrop Overlay */}
       <div
+        ref={backdropRef}
         onClick={() => setIsOpen(false)}
-        className={`fixed inset-0 z-40 bg-black/70 backdrop-blur-md transition-opacity duration-500 ease-in-out ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-          }`}
+        className="fixed inset-0 z-40 bg-black/70 backdrop-blur-md opacity-0 pointer-events-none"
       />
 
+      {/* Side Navigation Drawer */}
       <div
-        className={`bg-[#E4E5E0] text-[#121212] w-full sm:w-[580px] md:w-[52vw] lg:w-[48vw] min-w-[320px] h-screen fixed top-0 right-0 z-50 px-6 sm:px-8 md:px-10 py-8 sm:py-10 shadow-2xl flex flex-col justify-between overflow-hidden transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] transform ${isOpen ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"
-          }`}
+        ref={sideNavRef}
+        className="bg-[#E4E5E0] text-[#121212] w-full sm:w-[580px] md:w-[52vw] lg:w-[48vw] min-w-[320px] h-screen fixed top-0 right-0 z-50 px-6 sm:px-8 md:px-10 py-8 sm:py-10 shadow-2xl flex flex-col justify-between overflow-hidden opacity-0 pointer-events-none"
       >
         <div className="flex justify-end items-center">
           <button
@@ -76,15 +209,14 @@ export default function Home() {
         </div>
 
         <nav className="my-auto flex flex-col gap-2 sm:gap-3 py-6">
-          {navLinks.map((link, idx) => (
+          {navLinks.map((link) => (
             <div key={link.label} className="overflow-hidden">
               <a
+                ref={addToNavRefs}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
                 data-cursor="sticky"
-                className={`block text-5xl sm:text-6xl md:text-7xl font-bold uppercase tracking-tight text-[#121212]/85 hover:text-black transition-all duration-500 ease-out transform group ${isOpen ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
-                  }`}
-                style={{ transitionDelay: `${isOpen ? idx * 70 + 120 : 0}ms` }}
+                className="block text-5xl sm:text-6xl md:text-7xl font-bold uppercase tracking-tight text-[#121212]/85 hover:text-black transition-colors duration-300 group"
               >
                 <span className="inline-block group-hover:translate-x-3 transition-transform duration-300">
                   {link.label}
@@ -95,8 +227,8 @@ export default function Home() {
         </nav>
 
         <div
-          className={`grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 pt-8 border-t border-neutral-200 transition-all duration-700 ease-out delay-500 ${isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
+          ref={navFooterRef}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 pt-8 border-t border-neutral-200"
         >
           <div className="flex flex-col gap-1">
             <span className="text-[11px] font-mono uppercase tracking-widest text-neutral-500 font-semibold">
@@ -260,6 +392,98 @@ export default function Home() {
             <span>CRAFTING DIGITAL EXPERIENCES</span>
             <span className="text-xs sm:text-sm opacity-70">✦</span>
           </div>
+        </div>
+      </div>
+      {/* CONTACT SECTION WITH GSAP SCROLLTRIGGER */}
+      <div
+        id="contact"
+        ref={contactRef}
+        className="bg-[#121212] h-screen w-screen relative overflow-hidden flex flex-col justify-between"
+      >
+        <div>
+          <div className="p-8 pt-10">
+            <div className="overflow-hidden">
+              <span
+                ref={tagRef}
+                className="font-amiamie uppercase text-xs text-white block"
+              >
+                Building experiences, not just websites.
+              </span>
+            </div>
+            <div className="overflow-hidden">
+              <h1
+                ref={titleRef}
+                className="text-8xl font-semibold text-white inline-block"
+              >
+                CONTACT
+              </h1>
+            </div>
+          </div>
+
+          <div
+            ref={lineRef}
+            className="h-[1.5px] w-screen bg-[#E4E5E0] -mt-10 origin-left"
+          />
+
+          <div className="relative">
+            <div
+              ref={mindRef}
+              className="absolute top-10 right-10 font-helvetica text-lg text-white"
+            >
+              <span className="justify-end flex text-neutral-400 font-medium">SOMETHING IN MIND?</span>
+              <p className="font-semibold mt-0.5">LET’S CREATE SOMETHING WORTH REMEMBERING.</p>
+            </div>
+          </div>
+
+          <div className="px-8 pt-36 flex flex-col gap-1 text-white max-w-2xl">
+            <div ref={emailRef}>
+              <span className="text-sm uppercase tracking-widest text-neutral-400 block font-sans font-medium">
+                E-MAIL
+              </span>
+              <div className="border-t border-neutral-800 mb-6">
+                <a
+                  href="mailto:vaibhav05dec@gmail.com"
+                  className="text-xl sm:text-2xl font-sans mt-1.5 text-white font-normal hover:text-neutral-300 transition-colors inline-block"
+                  data-cursor="sticky"
+                >
+                  vaibhav05dec@gmail.com
+                </a>
+              </div>
+            </div>
+
+            <div ref={socialRef}>
+              <span className="text-sm uppercase tracking-widest text-neutral-400 block font-sans font-medium">
+                SOCIAL MEDIA
+              </span>
+              <div className="border-t border-neutral-800">
+                <div className="text-sm sm:text-base font-mono text-white flex flex-wrap gap-3 mt-2 font-medium">
+                  {socialLinks.map((social) => (
+                    <a
+                      key={social.label}
+                      href={social.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      data-cursor="sticky"
+                      className="hover:text-neutral-400 transition-colors"
+                    >
+                      &#123;{social.label}&#125;
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Giant Full-Width Footer Wordmark with GSAP ScrollTrigger */}
+        <div className="w-full overflow-hidden select-none -mb-3 sm:-mb-5 relative">
+          <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-white/15 to-transparent blur-3xl pointer-events-none" />
+          <h1
+            ref={wordmarkRef}
+            className="font-helvetica font-black text-[19vw] leading-[0.72] tracking-tighter uppercase text-center whitespace-nowrap bg-gradient-to-b from-white via-neutral-100 to-neutral-500/35 bg-clip-text text-transparent drop-shadow-lg"
+          >
+            VAIBHAV
+          </h1>
         </div>
       </div>
     </>
