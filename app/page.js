@@ -425,22 +425,7 @@ export default function Home() {
         className="bg-[#E4E5E0] text-[#121212] w-full sm:w-[580px] md:w-[52vw] lg:w-[48vw] min-w-[320px] h-screen fixed top-0 right-0 z-50 px-6 sm:px-8 md:px-10 py-8 sm:py-10 flex flex-col justify-between overflow-hidden opacity-0 pointer-events-none"
       >
         <div className="flex justify-end items-center">
-          <button
-            onClick={() => setIsOpen(false)}
-            aria-label="Close Menu"
-            data-cursor="sticky"
-            className="absolute top-7 right-7 sm:top-8 sm:right-8 w-12 h-12 flex items-center justify-center text-[#121212] hover:text-neutral-500 transition-colors duration-300 focus:outline-none group cursor-pointer z-50"
-          >
-            <svg
-              className="w-9 h-9 sm:w-10 sm:h-10 transform group-hover:rotate-90 transition-transform duration-300"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+
         </div>
 
         <nav className="my-auto flex flex-col gap-2 sm:gap-3 py-6">
